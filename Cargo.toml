@@ -3,7 +3,7 @@ name = "geox"
 version = "0.1.0"
 edition = "2018"
 description = "Shim to simplify using PostGIS types with sqlx"
-author = ["Brendan Molloy <brendan@bbqsrc.net>"]
+authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
 license = "Apache-2.0 OR MIT"
 
 [dependencies]
