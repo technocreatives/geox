@@ -5,6 +5,9 @@ use sqlx::{
     Postgres,
 };
 
+#[cfg(feature = "async-graphql")]
+use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value};
+
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
@@ -43,5 +46,20 @@ impl<'de> sqlx::Decode<'de, Postgres> for Point {
         let geometry = Geometry::decode(value)?;
         let point = geo::Point::<f64>::try_from(geometry.0)?;
         Ok(Point(point))
+    }
+}
+
+#[cfg(feature = "async-graphql")]
+#[async_graphql::Scalar]
+impl ScalarType for Point {
+    fn parse(_value: Value) -> InputValueResult<Self> {
+        Err(InputValueError::custom("parsing not implemented"))
+    }
+
+    fn to_value(&self) -> Value {
+        Value::List(vec![
+            Value::Number(Number::from_f64(self.x()).unwrap()),
+            Value::Number(Number::from_f64(self.y()).unwrap()),
+        ])
     }
 }
