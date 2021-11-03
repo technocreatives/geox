@@ -11,7 +11,7 @@ use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
-pub struct Point(geo::Point<f64>);
+pub struct Point(pub geo::Point<f64>);
 
 impl PartialEq for Point {
     fn eq(&self, other: &Self) -> bool {

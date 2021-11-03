@@ -11,7 +11,7 @@ use sqlx::{
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
-pub struct Polygon(geo::Polygon<f64>);
+pub struct Polygon(pub geo::Polygon<f64>);
 
 impl PartialEq for Polygon {
     fn eq(&self, other: &Self) -> bool {

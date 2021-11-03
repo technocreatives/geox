@@ -7,7 +7,7 @@ use sqlx::{
 };
 
 #[derive(Clone, Debug)]
-pub struct Geometry(pub(crate) geo::Geometry<f64>);
+pub struct Geometry(pub geo::Geometry<f64>);
 
 impl PartialEq for Geometry {
     fn eq(&self, other: &Self) -> bool {
