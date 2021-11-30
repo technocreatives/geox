@@ -5,6 +5,7 @@ edition = "2018"
 description = "Shim to simplify using PostGIS types with sqlx and async-graphql"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
 license = "Apache-2.0 OR MIT"
+repository = "https://github.com/bbqsrc/geox"
 
 [dependencies]
 async-graphql = { version = "2.10.5", optional = true } 
