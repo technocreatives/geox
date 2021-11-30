@@ -1,5 +1,9 @@
-use std::{convert::TryFrom, ops::Deref};
+use std::ops::Deref;
 
+#[cfg(feature = "sqlx")]
+use std::convert::TryFrom;
+
+#[cfg(feature = "sqlx")]
 use sqlx::{
     postgres::{PgTypeInfo, PgValueRef},
     Postgres,
@@ -8,6 +12,7 @@ use sqlx::{
 #[cfg(feature = "async-graphql")]
 use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value};
 
+#[cfg(feature = "sqlx")]
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
@@ -29,6 +34,7 @@ impl Deref for Point {
     }
 }
 
+#[cfg(feature = "sqlx")]
 impl sqlx::Type<Postgres> for Point {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name("geometry")
@@ -41,6 +47,7 @@ impl Point {
     }
 }
 
+#[cfg(feature = "sqlx")]
 impl<'de> sqlx::Decode<'de, Postgres> for Point {
     fn decode(value: PgValueRef<'de>) -> Result<Self, sqlx::error::BoxDynError> {
         let geometry = Geometry::decode(value)?;

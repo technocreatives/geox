@@ -1,13 +1,18 @@
-use std::{convert::TryFrom, ops::Deref};
+use std::ops::Deref;
 
-#[cfg(feature = "async-graphql")]
-use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value};
+#[cfg(feature = "sqlx")]
+use std::convert::TryFrom;
 
+#[cfg(feature = "sqlx")]
 use sqlx::{
     postgres::{PgTypeInfo, PgValueRef},
     Postgres,
 };
 
+#[cfg(feature = "async-graphql")]
+use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value};
+
+#[cfg(feature = "sqlx")]
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
@@ -29,6 +34,7 @@ impl Deref for Polygon {
     }
 }
 
+#[cfg(feature = "sqlx")]
 impl sqlx::Type<Postgres> for Polygon {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name("geometry")
@@ -58,6 +64,7 @@ impl Polygon {
     }
 }
 
+#[cfg(feature = "sqlx")]
 impl<'de> sqlx::Decode<'de, Postgres> for Polygon {
     fn decode(value: PgValueRef<'de>) -> Result<Self, sqlx::error::BoxDynError> {
         let geometry = Geometry::decode(value)?;
@@ -65,9 +72,6 @@ impl<'de> sqlx::Decode<'de, Postgres> for Polygon {
         Ok(Polygon(polygon))
     }
 }
-
-// #[cfg(feature = "async-graphql")]
-// mod gql {
 
 #[cfg(feature = "async-graphql")]
 #[async_graphql::Scalar]
@@ -80,4 +84,3 @@ impl ScalarType for Polygon {
         self.to_async_graphql_value()
     }
 }
-// }

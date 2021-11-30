@@ -1,6 +1,9 @@
 use std::ops::Deref;
 
+#[cfg(feature = "sqlx")]
 use geozero::wkb;
+
+#[cfg(feature = "sqlx")]
 use sqlx::{
     postgres::{PgTypeInfo, PgValueRef},
     Postgres, ValueRef,
@@ -25,6 +28,7 @@ impl Deref for Geometry {
     }
 }
 
+#[cfg(feature = "sqlx")]
 impl sqlx::Type<Postgres> for Geometry {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name("geometry")
@@ -37,6 +41,7 @@ impl Geometry {
     }
 }
 
+#[cfg(feature = "sqlx")]
 impl<'de> sqlx::Decode<'de, Postgres> for Geometry {
     fn decode(value: PgValueRef<'de>) -> Result<Self, sqlx::error::BoxDynError> {
         if value.is_null() {
