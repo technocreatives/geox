@@ -1,7 +1,4 @@
-use std::ops::Deref;
-
-#[cfg(feature = "sqlx")]
-use std::convert::TryFrom;
+use std::{convert::TryFrom, ops::Deref};
 
 #[cfg(feature = "sqlx")]
 use sqlx::{
@@ -12,7 +9,6 @@ use sqlx::{
 #[cfg(feature = "async-graphql")]
 use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value};
 
-#[cfg(feature = "sqlx")]
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
@@ -61,6 +57,14 @@ impl Polygon {
                 })
                 .collect::<Vec<_>>(),
         )
+    }
+}
+
+impl TryFrom<Geometry> for Polygon {
+    type Error = geo_types::Error;
+
+    fn try_from(value: Geometry) -> Result<Self, Self::Error> {
+        geo::Polygon::try_from(value.0).map(Polygon)
     }
 }
 
