@@ -53,3 +53,28 @@ impl<'de> sqlx::Decode<'de, Postgres> for Geometry {
         )))
     }
 }
+
+#[cfg(feature = "serde")]
+use serde::Serialize;
+
+#[cfg(feature = "serde")]
+impl Serialize for Geometry {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer
+    {
+        use geozero::ToJson;
+        use std::collections::BTreeMap;
+        use serde_json::Value;
+        use serde::ser::{Error, SerializeMap};
+
+        let s = self.0.to_json().map_err(Error::custom)?;
+        let s: BTreeMap<String, Value> = serde_json::from_str(&s).map_err(Error::custom)?;
+
+        let mut map = serializer.serialize_map(Some(s.len()))?;
+        for (k, v) in s {
+            map.serialize_entry(&k, &v)?;
+        }
+        map.end()
+    }
+}

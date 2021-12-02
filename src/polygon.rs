@@ -88,3 +88,28 @@ impl ScalarType for Polygon {
         self.to_async_graphql_value()
     }
 }
+
+#[cfg(feature = "serde")]
+use serde::Serialize;
+
+#[cfg(feature = "serde")]
+impl Serialize for Polygon {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer
+    {
+        use geozero::ToJson;
+        use std::collections::BTreeMap;
+        use serde_json::Value;
+        use serde::ser::{Error, SerializeMap};
+
+        let s = geo::Geometry::Polygon(self.0.clone()).to_json().map_err(Error::custom)?;
+        let s: BTreeMap<String, Value> = serde_json::from_str(&s).map_err(Error::custom)?;
+
+        let mut map = serializer.serialize_map(Some(s.len()))?;
+        for (k, v) in s {
+            map.serialize_entry(&k, &v)?;
+        }
+        map.end()
+    }
+}
