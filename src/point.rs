@@ -1,7 +1,11 @@
 use std::{convert::TryFrom, ops::Deref};
 
 #[cfg(feature = "sqlx")]
+use geozero::ToWkb;
+
+#[cfg(feature = "sqlx")]
 use sqlx::{
+    encode::IsNull,
     postgres::{PgTypeInfo, PgValueRef},
     Postgres,
 };
@@ -60,6 +64,17 @@ impl<'de> sqlx::Decode<'de, Postgres> for Point {
     }
 }
 
+#[cfg(feature = "sqlx")]
+impl<'en> sqlx::Encode<'en, Postgres> for Point {
+    fn encode_by_ref(&self, buf: &mut sqlx::postgres::PgArgumentBuffer) -> IsNull {
+        let x = geo::Geometry::Point(self.0)
+            .to_ewkb(geozero::CoordDimensions::xy(), None)
+            .unwrap();
+        buf.extend(x);
+        sqlx::encode::IsNull::No
+    }
+}
+
 #[cfg(feature = "async-graphql")]
 #[async_graphql::Scalar]
 impl ScalarType for Point {
@@ -82,14 +97,16 @@ use serde::Serialize;
 impl Serialize for Point {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: serde::Serializer
+        S: serde::Serializer,
     {
         use geozero::ToJson;
-        use std::collections::BTreeMap;
-        use serde_json::Value;
         use serde::ser::{Error, SerializeMap};
+        use serde_json::Value;
+        use std::collections::BTreeMap;
 
-        let s = geo::Geometry::Point(self.0).to_json().map_err(Error::custom)?;
+        let s = geo::Geometry::Point(self.0)
+            .to_json()
+            .map_err(Error::custom)?;
         let s: BTreeMap<String, Value> = serde_json::from_str(&s).map_err(Error::custom)?;
 
         let mut map = serializer.serialize_map(Some(s.len()))?;
@@ -97,5 +114,47 @@ impl Serialize for Point {
             map.serialize_entry(&k, &v)?;
         }
         map.end()
+    }
+}
+
+#[cfg(all(test, feature = "sqlx"))]
+mod sqlx_tests {
+    use super::Point;
+
+    async fn pg_roundtrip(data_to: &Point, type_name: &str) -> Point {
+        use sqlx::postgres::PgPoolOptions;
+        let conn = PgPoolOptions::new()
+            .max_connections(5)
+            .connect("postgres://postgres:password@localhost/postgres")
+            .await
+            .unwrap();
+        let mut conn = conn.begin().await.unwrap();
+
+        sqlx::query(&format!(
+            "CREATE TABLE test ( id SERIAL PRIMARY KEY, geom GEOMETRY({type_name}, 26910) )"
+        ))
+        .execute(&mut conn)
+        .await
+        .unwrap();
+
+        sqlx::query("INSERT INTO test (geom) VALUES ($1)")
+            .bind(&data_to)
+            .execute(&mut conn)
+            .await
+            .unwrap();
+
+        let (data_from,): (Point,) = sqlx::query_as("SELECT geom FROM test")
+            .fetch_one(&mut conn)
+            .await
+            .unwrap();
+
+        data_from
+    }
+
+    #[tokio::test]
+    async fn polygon() {
+        let data_to = Point(geo::Point::from((0., 1.)));
+        let data_from = pg_roundtrip(&data_to, "Point").await;
+        assert_eq!(data_to, data_from);
     }
 }
