@@ -8,13 +8,18 @@ license = "Apache-2.0 OR MIT"
 repository = "https://github.com/bbqsrc/geox"
 
 [dependencies]
-async-graphql = { version = "3", optional = true } 
+async-graphql = { version = "3", optional = true }
 geo = "0.17.1"
 geo-types = "0.7.2"
-geozero = { version = "0.7.4", features = ["with-postgis-sqlx"], optional = true }
+geozero = { version = "0.7.4", features = [
+    "with-postgis-sqlx",
+], optional = true }
 serde = { version = "1.0.130", features = ["derive"], optional = true }
 serde_json = { version = "1", optional = true }
 sqlx = { version = "0.5.5", optional = true }
+
+[dev-dependencies]
+tokio = { version = "1.17.0", features = ["full"] }
 
 [dev-dependencies.sqlx]
 version = "0.5.5"
@@ -22,4 +27,10 @@ features = ["runtime-tokio-rustls", "postgres"]
 
 [features]
 sqlx05 = ["sqlx", "geozero"]
-serde1 = ["serde", "geozero/with-geojson", "serde_json"]
+serde1 = [
+    "serde",
+    "geozero/with-geojson",
+    "serde_json",
+    "geo/serde",
+    "geo-types/serde",
+]
