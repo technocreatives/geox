@@ -27,4 +27,10 @@ features = ["runtime-tokio-rustls", "postgres"]
 
 [features]
 sqlx05 = ["sqlx", "geozero"]
-serde1 = ["serde", "geozero/with-geojson", "serde_json"]
+serde1 = [
+    "serde",
+    "geozero/with-geojson",
+    "serde_json",
+    "geo/serde",
+    "geo-types/serde",
+]

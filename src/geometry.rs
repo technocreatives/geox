@@ -11,6 +11,8 @@ use sqlx::{
 };
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 pub struct Geometry(pub geo::Geometry<f64>);
 
 impl PartialEq for Geometry {
@@ -68,10 +70,7 @@ impl<'en> sqlx::Encode<'en, Postgres> for Geometry {
 }
 
 #[cfg(feature = "serde")]
-use serde::Serialize;
-
-#[cfg(feature = "serde")]
-impl Serialize for Geometry {
+impl serde::Serialize for Geometry {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

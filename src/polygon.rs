@@ -16,6 +16,8 @@ use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 pub struct Polygon(pub geo::Polygon<f64>);
 
 impl PartialEq for Polygon {

@@ -16,6 +16,8 @@ use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 pub struct Point(pub geo::Point<f64>);
 
 impl PartialEq for Point {
@@ -91,10 +93,7 @@ impl ScalarType for Point {
 }
 
 #[cfg(feature = "serde")]
-use serde::Serialize;
-
-#[cfg(feature = "serde")]
-impl Serialize for Point {
+impl serde::Serialize for Point {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
