@@ -1,9 +1,9 @@
 use std::ops::Deref;
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 use geozero::{wkb, ToWkb};
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 use sqlx::{
     encode::IsNull,
     postgres::{PgTypeInfo, PgValueRef},
@@ -11,8 +11,6 @@ use sqlx::{
 };
 
 #[derive(Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[cfg_attr(feature = "serde", serde(transparent))]
 pub struct Geometry(pub geo::Geometry<f64>);
 
 impl PartialEq for Geometry {
@@ -31,7 +29,7 @@ impl Deref for Geometry {
     }
 }
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 impl sqlx::Type<Postgres> for Geometry {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name("geometry")
@@ -44,7 +42,7 @@ impl Geometry {
     }
 }
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 impl<'de> sqlx::Decode<'de, Postgres> for Geometry {
     fn decode(value: PgValueRef<'de>) -> Result<Self, sqlx::error::BoxDynError> {
         if value.is_null() {
@@ -57,7 +55,7 @@ impl<'de> sqlx::Decode<'de, Postgres> for Geometry {
     }
 }
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 impl<'en> sqlx::Encode<'en, Postgres> for Geometry {
     fn encode_by_ref(&self, buf: &mut sqlx::postgres::PgArgumentBuffer) -> IsNull {
         let x = self
@@ -69,7 +67,7 @@ impl<'en> sqlx::Encode<'en, Postgres> for Geometry {
     }
 }
 
-#[cfg(feature = "serde")]
+#[cfg(feature = "serde1")]
 impl serde::Serialize for Geometry {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -91,7 +89,7 @@ impl serde::Serialize for Geometry {
     }
 }
 
-#[cfg(all(test, feature = "sqlx"))]
+#[cfg(all(test, feature = "sqlx05"))]
 mod sqlx_tests {
     use super::Geometry;
     use geo::{line_string, LineString, MultiLineString, Polygon};

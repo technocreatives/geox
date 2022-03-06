@@ -1,9 +1,9 @@
 use std::{convert::TryFrom, ops::Deref};
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 use geozero::ToWkb;
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 use sqlx::{
     encode::IsNull,
     postgres::{PgTypeInfo, PgValueRef},
@@ -16,8 +16,8 @@ use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[cfg_attr(feature = "serde", serde(transparent))]
+#[cfg_attr(feature = "serde1", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde1", serde(transparent))]
 pub struct Polygon(pub geo::Polygon<f64>);
 
 impl PartialEq for Polygon {
@@ -36,7 +36,7 @@ impl Deref for Polygon {
     }
 }
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 impl sqlx::Type<Postgres> for Polygon {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name("geometry")
@@ -74,7 +74,7 @@ impl TryFrom<Geometry> for Polygon {
     }
 }
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 impl<'de> sqlx::Decode<'de, Postgres> for Polygon {
     fn decode(value: PgValueRef<'de>) -> Result<Self, sqlx::error::BoxDynError> {
         let geometry = Geometry::decode(value)?;
@@ -83,7 +83,7 @@ impl<'de> sqlx::Decode<'de, Postgres> for Polygon {
     }
 }
 
-#[cfg(feature = "sqlx")]
+#[cfg(feature = "sqlx05")]
 impl<'en> sqlx::Encode<'en, Postgres> for Polygon {
     fn encode_by_ref(&self, buf: &mut sqlx::postgres::PgArgumentBuffer) -> IsNull {
         let x = geo::Geometry::Polygon(self.0.clone())
@@ -106,10 +106,10 @@ impl ScalarType for Polygon {
     }
 }
 
-#[cfg(feature = "serde")]
+#[cfg(feature = "serde1")]
 use serde::Serialize;
 
-#[cfg(feature = "serde")]
+#[cfg(feature = "serde1")]
 impl Serialize for Polygon {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -133,7 +133,7 @@ impl Serialize for Polygon {
     }
 }
 
-#[cfg(all(test, feature = "sqlx"))]
+#[cfg(all(test, feature = "sqlx05"))]
 mod sqlx_tests {
     use super::Polygon;
     use geo::LineString;
