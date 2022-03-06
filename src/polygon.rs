@@ -97,8 +97,29 @@ impl<'en> sqlx::Encode<'en, Postgres> for Polygon {
 #[cfg(feature = "async-graphql")]
 #[async_graphql::Scalar]
 impl ScalarType for Polygon {
+    #[cfg(not(feature = "serde1"))]
     fn parse(_value: Value) -> InputValueResult<Self> {
         Err(InputValueError::custom("parsing not implemented"))
+    }
+
+    #[cfg(feature = "serde1")]
+    fn parse(value: Value) -> InputValueResult<Self> {
+        use geozero::{geojson::GeoJson, ToGeo};
+
+        match value {
+            Value::String(x) => {
+                let geo = GeoJson(&x)
+                    .to_geo()
+                    .map_err(|_| InputValueError::custom("failed to parse GeoJSON string"))?;
+                match geo {
+                    geo::Geometry::Polygon(x) => Ok(Self(x)),
+                    _ => Err(InputValueError::custom("Got invalid type for Polygon")),
+                }
+            }
+            _ => Err(InputValueError::custom(
+                "parsing not implemented for this type (only string)",
+            )),
+        }
     }
 
     fn to_value(&self) -> Value {

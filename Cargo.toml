@@ -1,6 +1,6 @@
 [package]
 name = "geox"
-version = "0.4.2"
+version = "0.4.3"
 edition = "2018"
 description = "Shim to simplify using PostGIS types with sqlx and async-graphql"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
