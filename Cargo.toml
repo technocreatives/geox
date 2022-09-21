@@ -1,34 +1,34 @@
 [package]
 name = "geox"
-version = "0.4.3"
-edition = "2018"
+version = "0.5.0"
+edition = "2021"
 description = "Shim to simplify using PostGIS types with sqlx and async-graphql"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
 license = "Apache-2.0 OR MIT"
 repository = "https://github.com/bbqsrc/geox"
 
 [dependencies]
-async-graphql = { version = "3", optional = true }
-geo = "0.17.1"
-geo-types = "0.7.2"
-geozero = { version = "0.7.4", features = [
+async-graphql = { version = "4.0.13", optional = true }
+geo = "0.23.0"
+geo-types = "0.7.7"
+geozero = { version = "0.9.5", features = [
     "with-postgis-sqlx",
 ], optional = true }
-serde = { version = "1.0.130", features = ["derive"], optional = true }
-serde_json = { version = "1", optional = true }
-sqlx = { version = "0.5.5", optional = true }
+serde = { version = "1.0.144", features = ["derive"], optional = true }
+serde_json = { version = "1.0.85", optional = true }
+sqlx = { version = "0.6.2", optional = true }
 
 [dev-dependencies]
-tokio = { version = "1.17.0", features = ["full"] }
+tokio = { version = "1.21.1", features = ["full"] }
 
 [dev-dependencies.sqlx]
-version = "0.5.5"
+version = "0.6.2"
 features = ["runtime-tokio-rustls", "postgres"]
 
 [features]
-sqlx05 = ["sqlx", "geozero"]
-serde1 = [
-    "serde",
+sqlx = ["dep:sqlx", "geozero"]
+serde = [
+    "dep:serde",
     "geozero/with-geojson",
     "serde_json",
     "geo/serde",
