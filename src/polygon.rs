@@ -1,9 +1,9 @@
 use std::{convert::TryFrom, ops::Deref};
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 use geozero::ToWkb;
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 use sqlx::{
     encode::IsNull,
     postgres::{PgTypeInfo, PgValueRef},
@@ -36,7 +36,7 @@ impl Deref for Polygon {
     }
 }
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 impl sqlx::Type<Postgres> for Polygon {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name("geometry")
@@ -74,7 +74,7 @@ impl TryFrom<Geometry> for Polygon {
     }
 }
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 impl<'de> sqlx::Decode<'de, Postgres> for Polygon {
     fn decode(value: PgValueRef<'de>) -> Result<Self, sqlx::error::BoxDynError> {
         let geometry = Geometry::decode(value)?;
@@ -83,7 +83,7 @@ impl<'de> sqlx::Decode<'de, Postgres> for Polygon {
     }
 }
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 impl<'en> sqlx::Encode<'en, Postgres> for Polygon {
     fn encode_by_ref(&self, buf: &mut sqlx::postgres::PgArgumentBuffer) -> IsNull {
         let x = geo::Geometry::Polygon(self.0.clone())
@@ -154,7 +154,7 @@ impl Serialize for Polygon {
     }
 }
 
-#[cfg(all(test, feature = "sqlx05"))]
+#[cfg(all(test, feature = "sqlx"))]
 mod sqlx_tests {
     use super::Polygon;
     use geo::LineString;

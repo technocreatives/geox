@@ -1,9 +1,9 @@
 use std::{convert::TryFrom, ops::Deref};
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 use geozero::ToWkb;
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 use sqlx::{
     encode::IsNull,
     postgres::{PgTypeInfo, PgValueRef},
@@ -36,7 +36,7 @@ impl Deref for Point {
     }
 }
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 impl sqlx::Type<Postgres> for Point {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name("geometry")
@@ -57,7 +57,7 @@ impl TryFrom<Geometry> for Point {
     }
 }
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 impl<'de> sqlx::Decode<'de, Postgres> for Point {
     fn decode(value: PgValueRef<'de>) -> Result<Self, sqlx::error::BoxDynError> {
         let geometry = Geometry::decode(value)?;
@@ -66,7 +66,7 @@ impl<'de> sqlx::Decode<'de, Postgres> for Point {
     }
 }
 
-#[cfg(feature = "sqlx05")]
+#[cfg(feature = "sqlx")]
 impl<'en> sqlx::Encode<'en, Postgres> for Point {
     fn encode_by_ref(&self, buf: &mut sqlx::postgres::PgArgumentBuffer) -> IsNull {
         let x = geo::Geometry::Point(self.0)
@@ -137,7 +137,7 @@ impl serde::Serialize for Point {
     }
 }
 
-#[cfg(all(test, feature = "sqlx05"))]
+#[cfg(all(test, feature = "sqlx"))]
 mod sqlx_tests {
     use super::Point;
 
