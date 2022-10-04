@@ -16,8 +16,8 @@ use async_graphql::{InputValueError, InputValueResult, Number, ScalarType, Value
 use crate::Geometry;
 
 #[derive(Clone, Debug)]
-#[cfg_attr(feature = "serde1", derive(serde::Deserialize))]
-#[cfg_attr(feature = "serde1", serde(transparent))]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 pub struct Polygon(pub geo::Polygon<f64>);
 
 impl PartialEq for Polygon {
@@ -97,12 +97,12 @@ impl<'en> sqlx::Encode<'en, Postgres> for Polygon {
 #[cfg(feature = "async-graphql")]
 #[async_graphql::Scalar]
 impl ScalarType for Polygon {
-    #[cfg(not(feature = "serde1"))]
+    #[cfg(not(feature = "serde"))]
     fn parse(_value: Value) -> InputValueResult<Self> {
         Err(InputValueError::custom("parsing not implemented"))
     }
 
-    #[cfg(feature = "serde1")]
+    #[cfg(feature = "serde")]
     fn parse(value: Value) -> InputValueResult<Self> {
         use geozero::{geojson::GeoJson, ToGeo};
 
@@ -127,10 +127,10 @@ impl ScalarType for Polygon {
     }
 }
 
-#[cfg(feature = "serde1")]
+#[cfg(feature = "serde")]
 use serde::Serialize;
 
-#[cfg(feature = "serde1")]
+#[cfg(feature = "serde")]
 impl Serialize for Polygon {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where

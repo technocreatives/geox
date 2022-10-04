@@ -67,7 +67,7 @@ impl<'en> sqlx::Encode<'en, Postgres> for Geometry {
     }
 }
 
-#[cfg(feature = "serde1")]
+#[cfg(feature = "serde")]
 impl serde::Serialize for Geometry {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
