@@ -9,8 +9,8 @@ repository = "https://github.com/bbqsrc/geox"
 
 [dependencies]
 async-graphql = { version = "4.0.13", optional = true }
-geo = "0.23.0"
-geo-types = "0.7.7"
+geo = "0.23.1"
+geo-types = "0.7.8"
 geozero = { version = "0.9.5", features = [
     "with-postgis-sqlx",
 ], optional = true }
