@@ -6,7 +6,7 @@ use geozero::{wkb, ToWkb};
 #[cfg(feature = "sqlx")]
 use sqlx::{
     encode::IsNull,
-    postgres::{PgTypeInfo, PgValueRef},
+    postgres::{PgHasArrayType, PgTypeInfo, PgValueRef},
     Postgres, ValueRef,
 };
 
@@ -33,6 +33,13 @@ impl Deref for Geometry {
 impl sqlx::Type<Postgres> for Geometry {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name("geometry")
+    }
+}
+
+#[cfg(feature = "sqlx")]
+impl PgHasArrayType for Geometry {
+    fn array_type_info() -> PgTypeInfo {
+        PgTypeInfo::with_name("_geometry")
     }
 }
 
