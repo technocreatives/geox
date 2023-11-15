@@ -5,7 +5,7 @@ edition = "2021"
 license = "Apache-2.0 OR MIT"
 name = "geox"
 repository = "https://github.com/bbqsrc/geox"
-version = "0.5.2"
+version = "0.5.3"
 
 [dependencies]
 async-graphql = {version = ">=4,<7", optional = true}
