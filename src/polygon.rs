@@ -58,8 +58,7 @@ impl Polygon {
                     let x = Value::Number(Number::from_f64(coord.x).unwrap());
                     let y = Value::Number(Number::from_f64(coord.y).unwrap());
 
-                    let coord = Value::List(vec![x, y]);
-                    coord
+                    Value::List(vec![x, y])
                 })
                 .collect::<Vec<_>>(),
         )
@@ -176,7 +175,7 @@ mod sqlx_tests {
         .unwrap();
 
         sqlx::query("INSERT INTO test (geom) VALUES ($1)")
-            .bind(&data_to)
+            .bind(data_to)
             .execute(&mut conn)
             .await
             .unwrap();

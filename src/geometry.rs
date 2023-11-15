@@ -111,7 +111,7 @@ mod sqlx_tests {
         .unwrap();
 
         sqlx::query("INSERT INTO test (geom) VALUES ($1)")
-            .bind(&data_to)
+            .bind(data_to)
             .execute(&mut conn)
             .await
             .unwrap();
