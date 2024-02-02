@@ -9,21 +9,21 @@ version = "0.5.3"
 
 [dependencies]
 async-graphql = {version = ">=4,<7", optional = true}
-geo = "0.23"
-geo-types = "0.7.8"
-geozero = {version = "0.9", features = [
+geo = "0"
+geo-types = "0"
+geozero = {version = "0", features = [
   "with-postgis-sqlx",
 ], optional = true}
 serde = {version = "1.0.144", features = ["derive"], optional = true}
 serde_json = {version = "1.0.85", optional = true}
-sqlx = {version = "0.6", optional = true, features = ["runtime-tokio-rustls", "postgres"]}
+sqlx = {version = "0", optional = true, features = ["runtime-tokio-rustls", "postgres"]}
 
 [dev-dependencies]
 tokio = {version = "1.21.1", features = ["full"]}
 
 [dev-dependencies.sqlx]
 features = ["runtime-tokio-rustls", "postgres"]
-version = "0.6"
+version = "0"
 
 [features]
 serde = [
