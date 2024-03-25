@@ -9,9 +9,9 @@ version = "0.5.3"
 
 [dependencies]
 async-graphql = {version = ">=4,<7", optional = true}
-geo = "0.23"
+geo = ">=0.23,<0.29"
 geo-types = "0.7.8"
-geozero = {version = "0.9", features = [
+geozero = {version = ">=0.9,<0.13", features = [
   "with-postgis-sqlx",
 ], optional = true}
 serde = {version = "1.0.144", features = ["derive"], optional = true}
