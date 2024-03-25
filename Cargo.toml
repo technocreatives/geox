@@ -16,14 +16,11 @@ geozero = {version = "0.9", features = [
 ], optional = true}
 serde = {version = "1.0.144", features = ["derive"], optional = true}
 serde_json = {version = "1.0.85", optional = true}
-sqlx = {version = "0.6", optional = true, features = ["runtime-tokio-rustls", "postgres"]}
+sqlx = {version = "0.7.4", optional = true, features = ["runtime-tokio-rustls", "postgres"]}
 
 [dev-dependencies]
-tokio = {version = "1.21.1", features = ["full"]}
-
-[dev-dependencies.sqlx]
-features = ["runtime-tokio-rustls", "postgres"]
-version = "0.6"
+tokio = { version = "1.21.1", features = ["full"] }
+sqlx = {version = "0.7.4", features = ["runtime-tokio-rustls", "postgres"]}
 
 [features]
 serde = [

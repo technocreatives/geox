@@ -113,18 +113,18 @@ mod sqlx_tests {
         sqlx::query(&format!(
             "CREATE TABLE test ( id SERIAL PRIMARY KEY, geom GEOMETRY({type_name}, 26910) )"
         ))
-        .execute(&mut conn)
+        .execute(&mut *conn)
         .await
         .unwrap();
 
         sqlx::query("INSERT INTO test (geom) VALUES ($1)")
             .bind(data_to)
-            .execute(&mut conn)
+            .execute(&mut *conn)
             .await
             .unwrap();
 
         let (data_from,): (Geometry,) = sqlx::query_as("SELECT geom FROM test")
-            .fetch_one(&mut conn)
+            .fetch_one(&mut *conn)
             .await
             .unwrap();
 
